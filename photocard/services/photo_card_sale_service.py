@@ -42,7 +42,7 @@ class PhotoCardSaleService:
 
     def update_price(self, sale_id: uuid, price: int):
         photo_card_sale = PhotoCardSale.objects.get(uuid=sale_id, photo_card=self.photo_card)
-        if photo_card_sale.seller != self.seller:
+        if photo_card_sale.seller_id != self.seller.id:
             raise UnauthorizedException(detail="수정 권한이 없습니다.")
         if photo_card_sale.status == PhotoCardSaleStatus.COMPLETED:
             raise AlreadyCompletedSaleException(detail= '판매된 건은 수정할 수 없습니다.')

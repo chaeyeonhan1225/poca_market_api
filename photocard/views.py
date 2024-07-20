@@ -139,11 +139,13 @@ class PhotoCardSaleDetailView(APIView):
         serializer.is_valid(raise_exception=True)
         try:
             photo_card = PhotoCard.objects.get(id=photo_card_id)
-
+            print(f'실행! = {request.user}')
             sale = PhotoCardSaleService(photo_card=photo_card, seller=request.user).update_price(
                 sale_id=photo_card_sale_id, price=serializer.validated_data["price"]
             )
             return Response(data=PhotoCardSaleDetailSerializer(sale).data)
+        except Exception as e:
+            raise e
         except PhotoCard.DoesNotExist:
             return Response(data={"detail": "존재하지 않는 포토카드 입니다."}, status=status.HTTP_404_NOT_FOUND)
         except PhotoCardSale.DoesNotExist:
