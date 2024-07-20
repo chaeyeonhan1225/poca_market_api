@@ -6,6 +6,7 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework import serializers, status
 from rest_framework.generics import ListAPIView, ListCreateAPIView, RetrieveAPIView
 from rest_framework.pagination import CursorPagination
+from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -33,6 +34,7 @@ from photocard.services.photo_card_sale_service import PhotoCardSaleService
 class PhotoCardListCreateView(ListCreateAPIView):
     serializer_class = PhotoCardSerializer
     permission_classes = (AllowAny,)
+    parser_classes = (MultiPartParser,)
 
     def get_queryset(self):
         return PhotoCard.objects.annotate(min_price=Min("photocardsale__price"))
@@ -80,7 +82,7 @@ class PhotoCardDetailView(RetrieveAPIView):
             Prefetch(
                 lookup="photocardsale_set",
                 queryset=PhotoCardSale.objects.filter(status=PhotoCardSaleStatus.COMPLETED).order_by("-updated_at"),
-                to_attr="to_photocardsale",
+                to_attr="to_completed_sales",
             )
         )
 

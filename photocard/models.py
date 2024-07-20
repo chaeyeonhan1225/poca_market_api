@@ -13,8 +13,7 @@ from common.models import TimeRecordingMixin
 
 def upload_photo_card_to(_instance, filename):
     prefix = timezone.now().strftime("%Y/%m/%d")
-    extension = os.path.splitext(filename)[-1].lower()
-    return settings.PHOTO_CARD_STORE_DIRECTORY + "/" + prefix + extension
+    return settings.PHOTO_CARD_STORE_DIRECTORY + "/" + prefix + "/" + filename
 
 
 @unique
