@@ -6,21 +6,22 @@
 - Postgresql
 - redis
 - celery
-- 개발 도구: django_extensions, black, isort, drf-yasg, silk
+- django_extensions, black, isort, drf-yasg, silk
 ## 실행
 1. 설정 파일을 생성합니다.(프로젝트 root 폴더/.credentials.json)
     ```json
-    "SECRET_KEY": "poca_market_secret_key",
-     "DB": {
-       "HOST": "localhost",
-       "NAME" : "poca_market",
-       "USER":  "",
-       "PASSWORD":  "",
-       "PORT":  5432
-     },
-     "REDIS": {
-       "HOST": "redis://127.0.0.1:6379"
-     }
+   {
+      "SECRET_KEY": "poca_market_secret_key",
+       "DB": {
+         "HOST": "localhost",
+         "NAME" : "poca_market",
+         "USER":  "",
+         "PASSWORD":  "",
+         "PORT":  5432
+       },
+       "REDIS": {
+         "HOST": "redis://127.0.0.1:6379"
+       }
     }
     ```
 2. 로컬 redis, postgresql 정보를 입력합니다.(database 생성 필요)
@@ -31,6 +32,7 @@
     celery -A poca_market_api worker -l INFO
     ```
 5. swagger로 API Docs에서 테스트 합니다. 
+   ![img.png](authorization.png)
     ```text
     로그인 방법
     1. /api/users/auth/register 로 회원가입
