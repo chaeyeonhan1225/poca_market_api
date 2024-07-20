@@ -1,7 +1,7 @@
 # Created by https://www.toptal.com/developers/gitignore/api/macos,pycharm+all,python,django
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,pycharm+all,python,django
 
-.local_storage/
+local_storage/
 .credentials.json
 
 ### Django ###

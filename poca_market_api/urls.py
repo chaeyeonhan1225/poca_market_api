@@ -26,7 +26,8 @@ schema_view = get_schema_view(
     openapi.Info(
         title="인플루디오 사전과제 API",
         default_version="v1",
-        description="포카마켓",
+        description="포카마켓 포토카드 서비스 구현 "
+                    "API 상세: https://docs.google.com/document/d/1_z_HPDLqwEG-SIxrQMuCnR4RlLGrlDZ0iOsS3IUefSQ/edit?usp=sharing",
         terms_of_service="https://www.google.com/policies/terms/",
         contact=openapi.Contact(name="chaeyeonhan", email="gkscodus11@gmail.com"),
     ),
