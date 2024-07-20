@@ -15,12 +15,10 @@ logger = logging.getLogger("poca_market_api")
 
 def custom_exception_handler(exc, context):
     response = exception_handler(exc, context)
-    print(f'response = {response}')
     if hasattr(response, "status_code") and response.status_code >= HTTP_500_INTERNAL_SERVER_ERROR:
         logger.error("Server error %s", traceback.format_exc())
 
     if response is not None:
-        response.data["code"] = exc.code if hasattr(exc, "code") else ""
         return response
     else:
         if settings.DEBUG:
