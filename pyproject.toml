@@ -1,0 +1,40 @@
+[tool.poetry]
+name = "poca-market-api"
+version = "0.1.0"
+description = "poca_market_api"
+authors = ["chaeyeon <gkscodus11@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+djangorestframework = "^3.15.2"
+django = "^5.0.7"
+drf-yasg = "^1.21.7"
+djangorestframework-simplejwt = "^5.3.1"
+pillow = "^10.4.0"
+django-silk = "^5.1.0"
+django-extensions = "^3.2.3"
+psycopg2 = "^2.9.9"
+black = "^24.4.2"
+isort = "^5.13.2"
+celery = {extras = ["redis"], version = "^5.4.0"}
+django-redis = "^5.4.0"
+django-filter = "^24.2"
+django-enumfields = "^2.1.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length=120
+exclude = '''
+    \.git
+    | venv
+    | ^.*\b(migrations)\b.*$
+'''
+
+[tool.isort]
+line_length=120
+skip=[".gitignore", "migrations", "venv"]
