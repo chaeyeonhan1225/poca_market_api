@@ -11,10 +11,20 @@ class PhotoCardSaleParamSerializer(EnumSupportSerializerMixin, serializers.Seria
 
 
 class PhotoCardSaleSerializer(EnumSupportSerializerMixin, serializers.ModelSerializer):
-
     class Meta:
         model = PhotoCardSale
-        fields = ["fee", "price", "total_price", "created_at", "updated_at", "status", "buyer", "seller"]
+        fields = [
+            "uuid",
+            "photo_card_id",
+            "fee",
+            "price",
+            "total_price",
+            "created_at",
+            "updated_at",
+            "status",
+            "buyer_id",
+            "seller_id",
+        ]
 
 
 class PhotoCardSerializer(EnumSupportSerializerMixin, serializers.ModelSerializer):

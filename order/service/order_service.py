@@ -1,7 +1,7 @@
 from django.db import transaction
 
 from order.exceptions import NotEnoughCashException
-from order.models import Order, OrderItem, Payment, UserCash, PaymentStatus, PaymentMethod
+from order.models import Order, OrderItem, Payment, PaymentMethod, PaymentStatus, UserCash
 from photocard.models import PhotoCardSale
 from user.models import User
 

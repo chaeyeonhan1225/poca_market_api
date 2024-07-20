@@ -5,8 +5,8 @@ from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.db import transaction
 
-from photocard.exceptions import ConflictException, UnauthorizedException
-from photocard.models import PhotoCard, PhotoCardSale
+from photocard.exceptions import AlreadyCompletedSaleException, ConflictException, UnauthorizedException
+from photocard.models import PhotoCard, PhotoCardSale, PhotoCardSaleStatus
 from photocard.tasks import add_photo_card_sale_history
 from photocard.utils import get_fee
 
@@ -35,15 +35,17 @@ class PhotoCardSaleService:
         sale.save()
         transaction.on_commit(
             lambda: add_photo_card_sale_history.delay(
-                sale_id=sale.id, before={"price": before_price}, after={"price": price}
+                sale_id=sale.uuid, before={"price": before_price}, after={"price": price}
             )
         )
         return sale
 
     def update_price(self, sale_id: uuid, price: int):
-        photo_card_sale = PhotoCardSale.objects.get(uuid=sale_id)
+        photo_card_sale = PhotoCardSale.objects.get(uuid=sale_id, photo_card=self.photo_card)
         if photo_card_sale.seller != self.seller:
             raise UnauthorizedException(detail="수정 권한이 없습니다.")
+        if photo_card_sale.status == PhotoCardSaleStatus.COMPLETED:
+            raise AlreadyCompletedSaleException(detail= '판매된 건은 수정할 수 없습니다.')
 
         if cache.set(photo_card_sale.key, True, nx=True, timeout=60):
             try:

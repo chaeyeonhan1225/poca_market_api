@@ -3,8 +3,8 @@ import uuid
 from enum import unique
 
 from django.conf import settings
-from django.db import models
 from django.contrib.postgres.indexes import BrinIndex
+from django.db import models
 from django.utils import timezone
 from enumfields import Enum, EnumField
 

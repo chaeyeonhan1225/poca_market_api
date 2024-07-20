@@ -30,3 +30,13 @@ class UnauthorizedException(APIException):
     def __init__(self, detail=None, code=None):
         self.detail = detail
         self.code = code
+
+
+class AlreadyCompletedSaleException(APIException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    default_detail = '이미 판매완료 되었습니다.'
+    default_code = "already_completed_sale_exception"
+
+    def __init__(self, detail=None, code=None):
+        self.detail = detail or self.default_detail
+        self.code = code or self.default_code

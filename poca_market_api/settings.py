@@ -109,6 +109,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework_simplejwt.authentication.JWTAuthentication",),
     "DEFAULT_PAGINATION_CLASS": "common.pagination.CustomCursorPagination",
     "PAGE_SIZE": 10,
+    "EXCEPTION_HANDLER": "common.exception_handler.custom_exception_handler",
 }
 
 # CASH(REDIS)
