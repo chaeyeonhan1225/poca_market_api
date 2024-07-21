@@ -12,8 +12,13 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from photocard.models import PhotoCard, PhotoCardSale, PhotoCardSaleStatus
-from photocard.serializers import (PhotoCardDetailSerializer, PhotoCardSaleDetailSerializer,
-                                   PhotoCardSaleParamSerializer, PhotoCardSaleSerializer, PhotoCardSerializer)
+from photocard.serializers import (
+    PhotoCardDetailSerializer,
+    PhotoCardSaleDetailSerializer,
+    PhotoCardSaleParamSerializer,
+    PhotoCardSaleSerializer,
+    PhotoCardSerializer,
+)
 from photocard.services.photo_card_sale_purchase_service import PhotoCardSalePurchaseService
 from photocard.services.photo_card_sale_service import PhotoCardSaleService
 
@@ -139,7 +144,7 @@ class PhotoCardSaleDetailView(APIView):
         serializer.is_valid(raise_exception=True)
         try:
             photo_card = PhotoCard.objects.get(id=photo_card_id)
-            print(f'실행! = {request.user}')
+            print(f"실행! = {request.user}")
             sale = PhotoCardSaleService(photo_card=photo_card, seller=request.user).update_price(
                 sale_id=photo_card_sale_id, price=serializer.validated_data["price"]
             )

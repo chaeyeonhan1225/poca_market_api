@@ -11,6 +11,8 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from user.serializers import UserLoginSerializer, UserRegisterSerializer
 
 logger = logging.getLogger("poca_market_api")
+
+
 @method_decorator(
     name="post",
     decorator=swagger_auto_schema(operation_summary="회원가입", request_body=UserRegisterSerializer()),
@@ -23,7 +25,7 @@ class UserRegisterView(APIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         token = TokenObtainPairSerializer.get_token(user)
-        logger.info(f'{user.email}({user.id}) registered successfully')
+        logger.info(f"{user.email}({user.id}) registered successfully")
         return Response({"user": serializer.data, "token": {"access": str(token.access_token), "refresh": str(token)}})
 
 
@@ -39,5 +41,5 @@ class UserLoginView(APIView):
         token_serializer.is_valid(raise_exception=True)
         user = token_serializer.user
         serializer = UserLoginSerializer(user)
-        logger.info(f'{user.email}({user.id}) logged in successfully')
+        logger.info(f"{user.email}({user.id}) logged in successfully")
         return Response({"user": serializer.data, "token": token_serializer.validated_data}, status=status.HTTP_200_OK)

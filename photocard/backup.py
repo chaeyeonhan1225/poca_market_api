@@ -8,7 +8,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 
 def create_default_photo_cards(apps, schema_editor):
     db = schema_editor.connection.alias
-    photo_card = apps.get_model(app_label='photocard', model_name='PhotoCard')
+    photo_card = apps.get_model(app_label="photocard", model_name="PhotoCard")
 
     files = os.listdir(os.path.join(settings.BASE_DIR, "test_images"))
     for idx, file in enumerate(files):
@@ -21,17 +21,17 @@ def create_default_photo_cards(apps, schema_editor):
                     title=file,
                 )
 
+
 def reverse_photo_cards(apps, schema_editor):
     db = schema_editor.connection.alias
-    photo_card = apps.get_model(app_label='photocard', model_name='PhotoCard')
+    photo_card = apps.get_model(app_label="photocard", model_name="PhotoCard")
 
     photo_card.objects.using(db).delete()
+
 
 class Migration(migrations.Migration):
     dependencies = [
         ("photocard", "0001_initial"),
     ]
 
-    operations = [
-        migrations.RunPython(code=create_default_photo_cards, reverse_code=reverse_photo_cards)
-    ]
+    operations = [migrations.RunPython(code=create_default_photo_cards, reverse_code=reverse_photo_cards)]

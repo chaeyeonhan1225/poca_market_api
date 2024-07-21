@@ -45,7 +45,7 @@ class PhotoCardSaleService:
         if photo_card_sale.seller_id != self.seller.id:
             raise UnauthorizedException(detail="수정 권한이 없습니다.")
         if photo_card_sale.status == PhotoCardSaleStatus.COMPLETED:
-            raise AlreadyCompletedSaleException(detail= '판매된 건은 수정할 수 없습니다.')
+            raise AlreadyCompletedSaleException(detail="판매된 건은 수정할 수 없습니다.")
 
         if cache.set(photo_card_sale.key, True, nx=True, timeout=60):
             try:
