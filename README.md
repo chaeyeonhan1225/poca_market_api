@@ -24,18 +24,23 @@
        }
     }
     ```
-2. 로컬 redis, postgresql 정보를 입력합니다.(database 생성 필요)
-3. `poetry add .` 명령어로 패키지를 설치합니다.
-4. 애플리케이션, celery를 실행합니다.
+2. 가상환경을 세팅합니다.
+   ```shell
+   python -m venv venv
+   source venv/bin/activate
+   ```
+3. 로컬 redis, postgresql 정보를 입력합니다.(database 생성 필요)
+4. `poetry add .` 명령어로 패키지를 설치합니다.(`pip install poetry` 로 poetry 설치 필요)
+5. 애플리케이션, celery를 실행합니다.
    ```shell
     python manage.py runserver
     celery -A poca_market_api worker -l INFO
     ```
-5. swagger로 API Docs에서 테스트 합니다. 
+6. swagger로 API Docs에서 테스트 합니다. 
    ![img.png](authorization.png)
     ```text
     로그인 방법
-    1. /api/users/auth/register 로 회원가입
+    1. /api/users/auth/register/ 로 회원가입
     2. 발급받은 access token을 Authorization 헤더에 입력합니다. -> Bearer <accessToken>
     ```
 
