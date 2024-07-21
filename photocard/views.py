@@ -3,22 +3,17 @@ from django.db.models.functions import RowNumber
 from django.utils.decorators import method_decorator
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import serializers, status
+from rest_framework import pagination, serializers, status
 from rest_framework.generics import ListAPIView, ListCreateAPIView, RetrieveAPIView
 from rest_framework.pagination import CursorPagination
 from rest_framework.parsers import MultiPartParser
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from photocard.models import PhotoCard, PhotoCardSale, PhotoCardSaleStatus
-from photocard.serializers import (
-    PhotoCardDetailSerializer,
-    PhotoCardSaleDetailSerializer,
-    PhotoCardSaleParamSerializer,
-    PhotoCardSaleSerializer,
-    PhotoCardSerializer,
-)
+from photocard.serializers import (PhotoCardDetailSerializer, PhotoCardSaleDetailSerializer,
+                                   PhotoCardSaleParamSerializer, PhotoCardSaleSerializer, PhotoCardSerializer)
 from photocard.services.photo_card_sale_purchase_service import PhotoCardSalePurchaseService
 from photocard.services.photo_card_sale_service import PhotoCardSaleService
 
@@ -33,7 +28,7 @@ from photocard.services.photo_card_sale_service import PhotoCardSaleService
 )
 class PhotoCardListCreateView(ListCreateAPIView):
     serializer_class = PhotoCardSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
     parser_classes = (MultiPartParser,)
 
     def get_queryset(self):
@@ -81,24 +76,46 @@ class PhotoCardDetailView(RetrieveAPIView):
         return PhotoCard.objects.prefetch_related(
             Prefetch(
                 lookup="photocardsale_set",
-                queryset=PhotoCardSale.objects.filter(status=PhotoCardSaleStatus.COMPLETED).order_by("-updated_at"),
+                queryset=PhotoCardSale.objects.filter(status=PhotoCardSaleStatus.COMPLETED).order_by("-updated_at")[
+                    0:5
+                ],
                 to_attr="to_completed_sales",
             )
         )
 
 
+class PhotoCardSaleCursorPagination(pagination.CursorPagination):
+    page_size = 10
+    ordering = ("price", "-updated_at")
+
+
+@method_decorator(
+    name="get",
+    decorator=swagger_auto_schema(
+        operation_summary="포토카드 판매 목록",
+        operation_description="포토카드 판매 목록을 가격, 업데이트 최신순으로 조회합니다.",
+        operation_id="photo_card_sale_by_photo_card",
+        responses={200: PhotoCardSaleSerializer()},
+    ),
+)
 @method_decorator(
     name="post",
     decorator=swagger_auto_schema(
         operation_summary="포토카드 판매 등록",
+        operation_description="포토카드 판매를 등록합니다.",
         request_body=PhotoCardSaleParamSerializer(),
         responses={200: PhotoCardSaleSerializer()},
     ),
 )
-class PhotoCardSaleCreateView(APIView):
-    permission_classes = (IsAuthenticated,)
+class PhotoCardSaleListCreateView(ListCreateAPIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    serializer_class = PhotoCardSaleSerializer
+    pagination_class = PhotoCardSaleCursorPagination
 
-    def post(self, request, pk):
+    def get_queryset(self):
+        return PhotoCardSale.objects.filter(photo_card_id=self.kwargs.get("pk"), status=PhotoCardSaleStatus.SALE)
+
+    def create(self, request, pk):
         try:
             photo_card = PhotoCard.objects.get(id=pk)
             serializer = PhotoCardSaleParamSerializer(data=request.data)
@@ -113,7 +130,9 @@ class PhotoCardSaleCreateView(APIView):
 
 @method_decorator(
     name="get",
-    decorator=swagger_auto_schema(operation_summary="포토카드 판매 상세 조회"),
+    decorator=swagger_auto_schema(operation_summary="포토카드 판매 상세 조회",
+                                  operation_description="포토카드 판매 상세 정보를 조회합니다. "
+                                                        "거래 완료된 판매건도 조회할 수 있습니다."),
 )
 @method_decorator(
     name="patch",
@@ -144,7 +163,6 @@ class PhotoCardSaleDetailView(APIView):
         serializer.is_valid(raise_exception=True)
         try:
             photo_card = PhotoCard.objects.get(id=photo_card_id)
-            print(f"실행! = {request.user}")
             sale = PhotoCardSaleService(photo_card=photo_card, seller=request.user).update_price(
                 sale_id=photo_card_sale_id, price=serializer.validated_data["price"]
             )

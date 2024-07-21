@@ -19,8 +19,6 @@ class PhotoCardSaleSerializer(EnumSupportSerializerMixin, serializers.ModelSeria
             "fee",
             "price",
             "total_price",
-            "created_at",
-            "updated_at",
             "status",
             "buyer_id",
             "seller_id",
@@ -33,12 +31,6 @@ class PhotoCardSerializer(EnumSupportSerializerMixin, serializers.ModelSerialize
     class Meta:
         model = PhotoCard
         fields = ["id", "title", "artist", "image", "type"]
-
-
-"""
-PhotoCardDetailSerializer는 포토카드 상세용 Serializer로
-get_min_price 에서 N+1 문제가 생길 수 있으므로 리스트에서 사용하면 안됨
-"""
 
 
 class PhotoCardDetailSerializer(EnumSupportSerializerMixin, serializers.ModelSerializer):
