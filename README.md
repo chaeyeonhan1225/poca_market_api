@@ -33,7 +33,7 @@
 4. `poetry add .` 명령어로 패키지를 설치합니다.(`pip install poetry` 로 poetry 설치 필요)
 5. 애플리케이션, celery를 실행합니다.
    ```shell
-    python manage.py runserver
+    python manage.py runserver # 또는 gunicorn -c gunicorn.config.py
     celery -A poca_market_api worker -l INFO
     ```
 6. swagger로 API Docs에서 테스트 합니다. 
